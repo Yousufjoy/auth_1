@@ -17,6 +17,9 @@ const HeroRegister = () => {
     console.log("Submited!");
     const email = e.target.email.value;
     const pass = e.target.password.value;
+    const accept = e.target.terms.checked;
+    console.log(accept, email, pass);
+
     if (pass.length < 6) {
       setRegError("Password should be 6 characters or longer");
       return;
@@ -27,7 +30,10 @@ const HeroRegister = () => {
       return;
     }
 
-    console.log(`Email: ${email} and pass word is ${pass}`);
+    if (!accept) {
+      setRegError("Please Check the terms and condition ");
+      return;
+    }
     //create user
     createUserWithEmailAndPassword(auth, email, pass)
       .then((result) => {
@@ -70,28 +76,33 @@ const HeroRegister = () => {
                 <label className="label">
                   <span className="label-text">Password</span>
                 </label>
-                <input
-                  type={showPass ? "text" : "password"}
-                  placeholder="password"
-                  className="input input-bordered"
-                  name="password"
-                  required
-                />
-                <span
-                  onClick={() => {
-                    setShowPass(!showPass);
-                  }}
-                >
-                  {showPass ? (
-                    <AiFillEye></AiFillEye>
-                  ) : (
-                    <AiFillEyeInvisible></AiFillEyeInvisible>
-                  )}
-                </span>
-                <label className="label">
-                  <a href="#" className="label-text-alt link link-hover">
-                    Forgot password?
-                  </a>
+                <div className="relative">
+                  <input
+                    type={showPass ? "text" : "password"}
+                    placeholder="password"
+                    className="input input-bordered"
+                    name="password"
+                    required
+                  />
+                  <div className=" absolute top-5 right-[110px]">
+                    <span
+                      onClick={() => {
+                        setShowPass(!showPass);
+                      }}
+                    >
+                      {showPass ? (
+                        <AiFillEye></AiFillEye>
+                      ) : (
+                        <AiFillEyeInvisible></AiFillEyeInvisible>
+                      )}
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <input type="checkbox" name="terms" id="" />
+                <label className=" pl-4" htmlFor="">
+                  Accept our terms!
                 </label>
               </div>
               <div className="form-control mt-6">
