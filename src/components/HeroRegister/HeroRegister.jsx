@@ -2,6 +2,7 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 import auth from "../../firebase/firebase.config";
 import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 const HeroRegister = () => {
   const [regError, setRegError] = useState("");
@@ -104,6 +105,12 @@ const HeroRegister = () => {
                 <label className=" pl-4" htmlFor="">
                   Accept our terms!
                 </label>
+              </div>
+              <div>
+                Already Have an account
+                <Link to="/login">
+                  <span className=" text-blue-400">Login here!</span>
+                </Link>
               </div>
               <div className="form-control mt-6">
                 <button className="btn btn-primary">Register</button>

@@ -1,18 +1,55 @@
-import { signInWithEmailAndPassword } from "firebase/auth";
+import {
+  sendPasswordResetEmail,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
 import auth from "../../firebase/firebase.config";
+import { useRef, useState } from "react";
+import { Link } from "react-router-dom";
 
 const Login = () => {
+  const [regError, setRegError] = useState("");
+  const [success, setSuccess] = useState("");
+
+  const emailRef = useRef(null);
+
+  const handleForgetPassword = () => {
+    const email = emailRef.current.value;
+    if (!email) {
+      console.log("Please provide an email", emailRef.current.value);
+      return;
+    } else if (
+      !/^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$/.test(email)
+    ) {
+      console.log("Please put a valid email");
+      return;
+    }
+    sendPasswordResetEmail(auth, email)
+      .then(() => {
+        alert("Please check your email");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  // send validation email
+
   const handleLogin = (e) => {
     e.preventDefault();
     const email = e.target.email.value;
     const password = e.target.password.value;
 
+    setRegError("");
+    setSuccess("");
+
     signInWithEmailAndPassword(auth, email, password)
       .then((result) => {
         console.log("Success", result.user);
+        setSuccess("Successfully Created!");
       })
       .catch((error) => {
         console.log(error.message);
+        setRegError(error.message);
       });
   };
 
@@ -36,6 +73,7 @@ const Login = () => {
               <input
                 type="email"
                 name="email"
+                ref={emailRef}
                 placeholder="email"
                 className="input input-bordered"
                 required
@@ -53,14 +91,30 @@ const Login = () => {
                 required
               />
               <label className="label">
-                <a href="#" className="label-text-alt link link-hover">
+                <a
+                  onClick={handleForgetPassword}
+                  href="#"
+                  className="label-text-alt link link-hover"
+                >
                   Forgot password?
                 </a>
               </label>
             </div>
+            <div>
+              <span>
+                New to the website?
+                <Link to="/heroregister">
+                  <span className=" text-blue-400">Sign up</span>
+                </Link>
+                here
+              </span>
+            </div>
             <div className="form-control mt-6">
               <button className="btn btn-primary">Login</button>
             </div>
+
+            <div>{regError && <p className=" bg-red-400">{regError}</p>}</div>
+            <div>{success && <p className=" bg-green-500">{success}</p>}</div>
           </form>
         </div>
       </div>
