@@ -1,4 +1,8 @@
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+  updateProfile,
+} from "firebase/auth";
 import auth from "../../firebase/firebase.config";
 import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
 import { useState } from "react";
@@ -15,11 +19,11 @@ const HeroRegister = () => {
     setRegError("");
     setSuccess("");
 
-    console.log("Submited!");
+    const name = e.target.name.value;
     const email = e.target.email.value;
     const pass = e.target.password.value;
     const accept = e.target.terms.checked;
-    console.log(accept, email, pass);
+    console.log(accept, email, pass, name);
 
     if (pass.length < 6) {
       setRegError("Password should be 6 characters or longer");
@@ -40,6 +44,20 @@ const HeroRegister = () => {
       .then((result) => {
         console.log(result.user);
         setSuccess("Success!!!");
+
+        // update profile name
+
+        updateProfile(result.user, {
+          displayName: name,
+          photoURL: "wx.com",
+        })
+          .then(() => console.log("Prfoile updated!"))
+          .catch();
+
+        // Send varification
+        sendEmailVerification(result.user).then(() => {
+          alert("Please Check your email!");
+        });
       })
       .catch((error) => {
         console.log(error);
@@ -70,6 +88,16 @@ const HeroRegister = () => {
                   placeholder="email"
                   className="input input-bordered"
                   name="email"
+                  required
+                />
+                <label className="label">
+                  <span className="label-text">Name</span>
+                </label>
+                <input
+                  type="text"
+                  placeholder="your name"
+                  className="input input-bordered"
+                  name="name"
                   required
                 />
               </div>
