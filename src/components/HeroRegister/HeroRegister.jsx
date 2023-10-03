@@ -1,9 +1,15 @@
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import auth from "../../firebase/firebase.config";
+import { useState } from "react";
 
 const HeroRegister = () => {
+  const [regError, setRegError] = useState("");
+  const [success, setSuccess] = useState("");
   const handleHeroRegister = (e) => {
     e.preventDefault();
+    // Reset Error/Success
+    setRegError("");
+    setSuccess("");
     console.log("Submited!");
     const email = e.target.email.value;
     const pass = e.target.password.value;
@@ -12,9 +18,11 @@ const HeroRegister = () => {
     createUserWithEmailAndPassword(auth, email, pass)
       .then((result) => {
         console.log(result.user);
+        setSuccess("Success!!!");
       })
       .catch((error) => {
         console.log(error);
+        setRegError(error.message);
       });
   };
 
@@ -65,6 +73,8 @@ const HeroRegister = () => {
                 <button className="btn btn-primary">Register</button>
               </div>
             </form>
+            <div>{regError && <p className=" text-red-400">{regError}</p>}</div>
+            <div>{success && <p className=" bg-green-500">{success}</p>}</div>
           </div>
         </div>
       </div>
