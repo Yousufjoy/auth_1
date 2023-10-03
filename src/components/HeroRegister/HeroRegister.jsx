@@ -1,18 +1,32 @@
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import auth from "../../firebase/firebase.config";
+import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
 import { useState } from "react";
 
 const HeroRegister = () => {
   const [regError, setRegError] = useState("");
   const [success, setSuccess] = useState("");
+  const [showPass, setShowPass] = useState(false);
+
   const handleHeroRegister = (e) => {
     e.preventDefault();
     // Reset Error/Success
     setRegError("");
     setSuccess("");
+
     console.log("Submited!");
     const email = e.target.email.value;
     const pass = e.target.password.value;
+    if (pass.length < 6) {
+      setRegError("Password should be 6 characters or longer");
+      return;
+    }
+
+    if (!/[A-Z]/.test(pass)) {
+      setRegError("Your password must contain at least one uppercase letter");
+      return;
+    }
+
     console.log(`Email: ${email} and pass word is ${pass}`);
     //create user
     createUserWithEmailAndPassword(auth, email, pass)
@@ -57,12 +71,23 @@ const HeroRegister = () => {
                   <span className="label-text">Password</span>
                 </label>
                 <input
-                  type="password"
+                  type={showPass ? "text" : "password"}
                   placeholder="password"
                   className="input input-bordered"
                   name="password"
                   required
                 />
+                <span
+                  onClick={() => {
+                    setShowPass(!showPass);
+                  }}
+                >
+                  {showPass ? (
+                    <AiFillEye></AiFillEye>
+                  ) : (
+                    <AiFillEyeInvisible></AiFillEyeInvisible>
+                  )}
+                </span>
                 <label className="label">
                   <a href="#" className="label-text-alt link link-hover">
                     Forgot password?
@@ -73,7 +98,7 @@ const HeroRegister = () => {
                 <button className="btn btn-primary">Register</button>
               </div>
             </form>
-            <div>{regError && <p className=" text-red-400">{regError}</p>}</div>
+            <div>{regError && <p className=" bg-red-400">{regError}</p>}</div>
             <div>{success && <p className=" bg-green-500">{success}</p>}</div>
           </div>
         </div>
