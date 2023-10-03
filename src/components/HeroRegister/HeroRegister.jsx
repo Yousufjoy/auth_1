@@ -1,3 +1,6 @@
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import auth from "../../firebase/firebase.config";
+
 const HeroRegister = () => {
   const handleHeroRegister = (e) => {
     e.preventDefault();
@@ -5,6 +8,14 @@ const HeroRegister = () => {
     const email = e.target.email.value;
     const pass = e.target.password.value;
     console.log(`Email: ${email} and pass word is ${pass}`);
+    //create user
+    createUserWithEmailAndPassword(auth, email, pass)
+      .then((result) => {
+        console.log(result.user);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   return (
